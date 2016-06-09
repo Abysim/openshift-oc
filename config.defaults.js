@@ -21,9 +21,10 @@ config.mediaRandomLenght = 8;
 
 // HTTP server port
 config.httpPort = 9090;
+config.httpLocalBindPort = 9090;
 
 // HTTP server location, URLs are generated from this
-config.httpLocation = 'http://mydomain.com' + ':' + config.httpPort;
+config.httpLocation = 'http://mydomain.com' + (config.httpPort == 80? '' : (':' + config.httpPort));
 
 //////////////////
 //  IRC config  //

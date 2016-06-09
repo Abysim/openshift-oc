@@ -115,7 +115,7 @@ module.exports = function(config, sendTo) {
             req.addListener('end', function() {
                 fileServer.serve(req, res);
             }).resume();
-        }).listen(config.httpPort);
+        }).listen(config.httpLocalBindPort);
     }
 
     var tg = new Telegram(config.tgToken, {polling: true});
