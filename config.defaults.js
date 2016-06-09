@@ -23,6 +23,8 @@ config.mediaRandomLenght = 8;
 config.httpPort = 9090;
 config.httpLocalBindPort = 9090;
 
+config.httpLocalBindIP = "127.0.0.1";
+
 // HTTP server location, URLs are generated from this
 config.httpLocation = 'http://mydomain.com' + (config.httpPort == 80? '' : (':' + config.httpPort));
 
