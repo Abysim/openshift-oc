@@ -96,6 +96,57 @@ var serveFile = function(fileId, config, tg, callback) {
             exec.execFile(dwebp.path, [filePath, '-o', newPath], function (error) {
                 if (!error) {
                     filePath = newPath;
+                } else {
+                    var cloudconvert = new (require('cloudconvert'))(config.cloudConvertKey);
+
+                    // create the process. see https://cloudconvert.com/apidoc#create
+                    cloudconvert.createProcess({inputformat: 'webp', outputformat: 'png'}, function(err, process) {
+
+                        if(err) {
+                            console.error('CloudConvert Process creation failed: ' + err);
+                        } else {
+
+                            // start the process. see https://cloudconvert.com/apidoc#create
+                            process.start({
+                                outputformat: 'png',
+                                input: 'upload'
+                            }, function (err, process) {
+
+                                if (err) {
+                                    console.error('CloudConvert Process start failed: ' + err);
+                                } else {
+
+                                    // upload the input file. see https://cloudconvert.com/apidoc#upload
+                                    process.upload(fs.createReadStream(filePath), null, function (err, process) {
+
+                                        if (err) {
+                                            console.error('CloudConvert Process upload failed: ' + err);
+                                        } else {
+                                            // wait until the process is finished (or completed with an error)
+                                            process.wait(function (err, process) {
+                                                if (err) {
+                                                    console.error('CloudConvert Process failed: ' + err);
+                                                } else {
+                                                    console.log('Done: ' + process.data.message);
+
+                                                    // download it
+                                                    process.download(fs.createWriteStream(newPath), null, function (err, process) {
+                                                        if (err) {
+                                                            console.error('CloudConvert Process download failed: ' + err);
+                                                        } else {
+                                                            filePath = newPath;
+                                                        }
+                                                    });
+                                                }
+
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+
+                    });
                 }
                 callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
             });
