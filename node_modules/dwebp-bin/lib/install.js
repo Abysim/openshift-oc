@@ -13,7 +13,7 @@ bin.run(['-version'], function (error) {
       .cmd('node -p "require(\'fs\').chmodSync(\'./configure\', \'755\')"')
       .cmd('./configure && make && mkdir -p ' + bin.dest() + ' && mv ./examples/.libs/dwebp ' + bin.use());
 
-    return builder.build(function (error) {
+    return builder.run(function (error) {
       if (error) {
         return console.log(logSymbols.error, error);
       }

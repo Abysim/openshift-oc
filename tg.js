@@ -5,7 +5,8 @@ var irc = require('./irc');
 var nodeStatic = require('node-static');
 var mkdirp = require('mkdirp');
 var crypto = require('crypto');
-var im = require('imagemagick');
+var exec = require('child_process');
+var dwebp = require('dwebp-bin');
 
 // tries to read chat ids from a file
 var readChatIds = function(arr) {
@@ -92,11 +93,11 @@ var serveFile = function(fileId, config, tg, callback) {
     tg.downloadFile(fileId, process.env.OPENSHIFT_DATA_DIR + '/.teleirc/files/' + randomString).then(function(filePath) {
         if (path.extname(filePath) == '.webp') {
             var newPath = path.dirname(filePath) + '/' + path.basename(filePath, '.webp') + '.png';
-            im.convert([filePath, newPath], function(err, stdout){
-                if (!err) {
-                    callback(config.httpLocation + '/' + randomString + '/' + path.basename(newPath));
+            exec.execFile(dwebp.path, [filePath, '-o', newPath], function (error) {
+                if (!error) {
+                    filePath = newPath;
+                    callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
                 } else {
-                    console.error('Imagick error: ' + stdout);
                     var cloudconvert = new (require('cloudconvert'))(config.cloudConvertKey);
                     // create the process. see https://cloudconvert.com/apidoc#create
                     cloudconvert.createProcess({inputformat: 'webp', outputformat: 'png'}, function(err, process) {
@@ -127,7 +128,7 @@ var serveFile = function(fileId, config, tg, callback) {
                                                             console.error('CloudConvert Process download failed: ' + err);
                                                         } else {
                                                             filePath = newPath;
-                                                            callback(config.httpLocation + '/' + randomString + '/' + path.basename(newPath));
+                                                            callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
                                                         }
                                                     });
                                                 }
