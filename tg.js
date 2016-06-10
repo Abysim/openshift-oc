@@ -98,6 +98,7 @@ var serveFile = function(fileId, config, tg, callback) {
                     filePath = newPath;
                     callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
                 } else {
+                    console.error('Convert webp failed: ' + err);
                     var cloudconvert = new (require('cloudconvert'))(config.cloudConvertKey);
                     // create the process. see https://cloudconvert.com/apidoc#create
                     cloudconvert.createProcess({inputformat: 'webp', outputformat: 'png'}, function(err, process) {
