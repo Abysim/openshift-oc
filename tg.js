@@ -214,18 +214,19 @@ module.exports = function(config, sendTo) {
         if (msg.reply_to_message) {
             var replyName = getName(msg.reply_to_message.from, config);
             if (replyName == '@' + config.tgBotName) {
-                // var matches = msg.reply_to_message.text.match(/^<(.*?)>/);
-                // if (matches) {
-                //     replyName = matches[1];
-                // } else {
-                //     matches = msg.reply_to_message.text.match(/^\*(.*?) /);
-                //     if (matches) {
-                //         replyName = matches[1];
-                //         reply = replyName + ': ';
-                //     }
-                // }
+                replyName = '';
+                var matches = msg.reply_to_message.text.match(/^<(.*?)>/);
+                if (matches) {
+                    replyName = matches[1];
+                } else {
+                    matches = msg.reply_to_message.text.match(/^\*(.*?) /);
+                    if (matches) {
+                        replyName = matches[1];
+                    }
+                }
                 // console.log('Comparing saved ID and current in TG group ' + channel.tgChatId + ': ' + process.env['lastMessageId' + channel.tgChatId] + ' | ' + msg.message_id);
-                if (process.env['lastMessageId' + channel.tgChatId] != msg.reply_to_message.message_id) {
+                var lastMessageId = 'lastMessageId' + channel.tgChatId + replyName;
+                if (lastMessageId in process.env && process.env[lastMessageId] != msg.reply_to_message.message_id) {
                     reply = '"' + msg.reply_to_message.text + '"';
                     sendTo.irc(channel.ircChan, '-> ' + reply);
                     reply = '';
@@ -234,7 +235,8 @@ module.exports = function(config, sendTo) {
                 }
             } else {
                 // console.log('Comparing saved ID and current in TG group ' + channel.tgChatId + ': ' + process.env['lastMessageId' + channel.tgChatId] + ' | ' + msg.message_id);
-                if (msg.reply_to_message.text && process.env['lastMessageId' + channel.tgChatId] != msg.reply_to_message.message_id) {
+                var lastMessageId = 'lastMessageId' + channel.tgChatId + getName(msg.reply_to_message.from, config);
+                if (msg.reply_to_message.text && (lastMessageId in process.env && process.env[lastMessageId] != msg.reply_to_message.message_id)) {
                     reply = '"<' + replyName + '> ' + msg.reply_to_message.text + '"';
                     sendTo.irc(channel.ircChan, '-> ' + reply);
                     reply = '';
@@ -305,7 +307,7 @@ module.exports = function(config, sendTo) {
             sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply + text);
         }
 
-        process.env['lastMessageId' + channel.tgChatId] = msg.message_id;
+        process.env['lastMessageId' + channel.tgChatId + getName(msg.from, config)] = msg.message_id;
         //console.log('Saved message ID recived in TG group ' + channel.tgChatId + ': ' + process.env['lastMessageId' + channel.tgChatId]);
 
     });
@@ -323,7 +325,17 @@ module.exports = function(config, sendTo) {
 
         var sentMessage = tg.sendMessage(channel.tgChatId, msg);
         if (sentMessage) {
-            process.env['lastMessageId' + channel.tgChatId] = sentMessage.message_id;
+            var replyName = '';
+            var matches = sentMessage.text.match(/^<(.*?)>/);
+            if (matches) {
+                replyName = matches[1];
+            } else {
+                matches = sentMessage.text.match(/^\*(.*?) /);
+                if (matches) {
+                    replyName = matches[1];
+                }
+            }
+            process.env['lastMessageId' + channel.tgChatId + replyName] = sentMessage.message_id;
             // console.log('Saved message ID sent to TG group ' + channel.tgChatId + ': ' + process.env['lastMessageId' + channel.tgChatId]);
         }
 
