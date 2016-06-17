@@ -326,11 +326,11 @@ module.exports = function(config, sendTo) {
         var sentMessage = tg.sendMessage(channel.tgChatId, msg);
         if (sentMessage) {
             var replyName = '';
-            var matches = sentMessage.text.match(/^<(.*?)>/);
+            var matches = msg.match(/^<(.*?)>/);
             if (matches) {
                 replyName = matches[1];
             } else {
-                matches = sentMessage.text.match(/^\*(.*?) /);
+                matches = msg.match(/^\*(.*?) /);
                 if (matches) {
                     replyName = matches[1];
                 }
