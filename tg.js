@@ -225,7 +225,7 @@ module.exports = function(config, sendTo) {
                     }
                 }
                 var lastMessageId = 'lastMessageId' + channel.tgChatId + replyName;
-                console.log('Comparing saved ID and current in TG group ' + channel.tgChatId + ' from user ' + replyName + ': ' + process.env[lastMessageId] + ' | ' + msg.reply_to_message.message_id);
+                // console.log('Comparing saved ID and current in TG group ' + channel.tgChatId + ' from user ' + replyName + ': ' + process.env[lastMessageId] + ' | ' + msg.reply_to_message.message_id);
                 if (lastMessageId in process.env && process.env[lastMessageId] != msg.reply_to_message.message_id) {
                     reply = '"' + msg.reply_to_message.text + '"';
                     sendTo.irc(channel.ircChan, '-> ' + reply);
@@ -324,8 +324,8 @@ module.exports = function(config, sendTo) {
         }
 
         tg.sendMessage(channel.tgChatId, msg).then(function (sended) {
-            console.log('Sent message to TG from IRC: ' + JSON.stringify(sended));
-            var chatId = sended.chat_id;
+            // console.log('Sent message to TG from IRC: ' + JSON.stringify(sended));
+            var chatId = sended.chat.id;
             var messageId = sended.message_id;
 
             var replyName = '';
@@ -339,7 +339,7 @@ module.exports = function(config, sendTo) {
                 }
             }
             process.env['lastMessageId' + chatId + replyName] = messageId;
-            console.log('Saved message ID sent to TG group ' + chatId + ' from user ' + replyName + ': ' + process.env['lastMessageId' + chatId]);
+            // console.log('Saved message ID sent to TG group ' + chatId + ' from user ' + replyName + ': ' + process.env['lastMessageId' + chatId + replyName]);
         });
     };
 };
