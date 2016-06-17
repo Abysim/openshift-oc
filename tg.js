@@ -216,7 +216,7 @@ module.exports = function(config, sendTo) {
             if (replyName == '@' + config.tgBotName) {
                 var matches = msg.reply_to_message.text.match(/^<(.*?)>/);
                 if (matches) {
-                    reply = '"' + msg.reply_to_message.text + '" ';
+                    reply = '[' + msg.reply_to_message.text + '] -> ';
                 } else {
                     matches = msg.reply_to_message.text.match(/^\*(.*?) /);
                     if (matches) {
@@ -225,7 +225,7 @@ module.exports = function(config, sendTo) {
                     }
                 }
             } else {
-                reply = '"<' + replyName + '> ' + msg.reply_to_message.text + '" ';
+                reply = '[<' + replyName + '> ' + msg.reply_to_message.text + '] -> ';
             }
         }
         
