@@ -216,15 +216,17 @@ module.exports = function(config, sendTo) {
             if (replyName == '@' + config.tgBotName) {
                 var matches = msg.reply_to_message.text.match(/^<(.*?)>/);
                 if (matches) {
-                    replyName = matches[1];
+                    reply = '"' + msg.reply_to_message.text + '" ';
                 } else {
                     matches = msg.reply_to_message.text.match(/^\*(.*?) /);
                     if (matches) {
                         replyName = matches[1];
+                        reply = replyName + ': ';
                     }
                 }
+            } else {
+                reply = '"<' + replyName + '> ' + msg.reply_to_message.text + '" ';
             }
-            reply = replyName + ': ';
         }
         
         if (msg.audio) {
