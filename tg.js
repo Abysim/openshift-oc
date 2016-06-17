@@ -214,18 +214,23 @@ module.exports = function(config, sendTo) {
         if (msg.reply_to_message) {
             var replyName = getName(msg.reply_to_message.from, config);
             if (replyName == '@' + config.tgBotName) {
-                var matches = msg.reply_to_message.text.match(/^<(.*?)>/);
-                if (matches) {
-                    reply = '[' + msg.reply_to_message.text + '] -> ';
-                } else {
-                    matches = msg.reply_to_message.text.match(/^\*(.*?) /);
-                    if (matches) {
-                        replyName = matches[1];
-                        reply = replyName + ': ';
-                    }
-                }
+                // var matches = msg.reply_to_message.text.match(/^<(.*?)>/);
+                // if (matches) {
+                //     replyName = matches[1];
+                // } else {
+                //     matches = msg.reply_to_message.text.match(/^\*(.*?) /);
+                //     if (matches) {
+                //         replyName = matches[1];
+                //         reply = replyName + ': ';
+                //     }
+                // }
+                reply = '[' + msg.reply_to_message.text + '] -> ';
             } else {
-                reply = '[<' + replyName + '> ' + msg.reply_to_message.text + '] -> ';
+                if (msg.reply_to_message.text) {
+                    reply = '[<' + replyName + '> ' + msg.reply_to_message.text + '] -> ';
+                } else {
+                    reply = replyName + ': ';
+                }
             }
         }
         
