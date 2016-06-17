@@ -323,22 +323,23 @@ module.exports = function(config, sendTo) {
             return;
         }
 
-        var sentMessage = tg.sendMessage(channel.tgChatId, msg);
-        console.log('Sent message to TG: ' + JSON.stringify(sentMessage));
-        if (sentMessage) {
+        tg.sendMessage(channel.tgChatId, msg).then(function (sended) {
+            var chatId = sended.chat_id;
+            var messageId = sended.message_id;
+
             var replyName = '';
-            var matches = msg.match(/^<(.*?)>/);
+            var matches = sended.text.match(/^<(.*?)>/);
             if (matches) {
                 replyName = matches[1];
             } else {
-                matches = msg.match(/^\*(.*?) /);
+                matches = sended.text.match(/^\*(.*?) /);
                 if (matches) {
                     replyName = matches[1];
                 }
             }
-            process.env['lastMessageId' + channel.tgChatId + replyName] = sentMessage.message_id;
-            console.log('Saved message ID sent to TG group ' + channel.tgChatId + ': ' + process.env['lastMessageId' + channel.tgChatId]);
-        }
-
+            
+            process.env['lastMessageId' + chatId + replyName] = messageId;
+            //console.log('Saved message ID sent to TG group ' + chatId + ': ' + process.env['lastMessageId' + chatId]);
+        });
     };
 };
