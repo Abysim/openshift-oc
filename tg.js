@@ -324,6 +324,7 @@ module.exports = function(config, sendTo) {
         }
 
         var sentMessage = tg.sendMessage(channel.tgChatId, msg);
+        console.log('Sent message to TG: ' + JSON.stringify(sentMessage));
         if (sentMessage) {
             var replyName = '';
             var matches = msg.match(/^<(.*?)>/);
@@ -336,7 +337,7 @@ module.exports = function(config, sendTo) {
                 }
             }
             process.env['lastMessageId' + channel.tgChatId + replyName] = sentMessage.message_id;
-            // console.log('Saved message ID sent to TG group ' + channel.tgChatId + ': ' + process.env['lastMessageId' + channel.tgChatId]);
+            console.log('Saved message ID sent to TG group ' + channel.tgChatId + ': ' + process.env['lastMessageId' + channel.tgChatId]);
         }
 
     };
