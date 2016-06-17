@@ -225,7 +225,7 @@ module.exports = function(config, sendTo) {
                     }
                 }
                 var lastMessageId = 'lastMessageId' + channel.tgChatId + replyName;
-                // console.log('Comparing saved ID and current in TG group ' + channel.tgChatId + ': ' + process.env['lastMessageId' + channel.tgChatId] + ' | ' + msg.message_id);
+                console.log('Comparing saved ID and current in TG group ' + channel.tgChatId + ' from user ' + replyName + ': ' + process.env[lastMessageId] + ' | ' + msg.reply_to_message.message_id);
                 if (lastMessageId in process.env && process.env[lastMessageId] != msg.reply_to_message.message_id) {
                     reply = '"' + msg.reply_to_message.text + '"';
                     sendTo.irc(channel.ircChan, '-> ' + reply);
@@ -337,9 +337,8 @@ module.exports = function(config, sendTo) {
                     replyName = matches[1];
                 }
             }
-            
             process.env['lastMessageId' + chatId + replyName] = messageId;
-            //console.log('Saved message ID sent to TG group ' + chatId + ': ' + process.env['lastMessageId' + chatId]);
+            console.log('Saved message ID sent to TG group ' + chatId + ' from user ' + replyName + ': ' + process.env['lastMessageId' + chatId]);
         });
     };
 };
