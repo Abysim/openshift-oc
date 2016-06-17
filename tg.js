@@ -224,11 +224,15 @@ module.exports = function(config, sendTo) {
                 //         reply = replyName + ': ';
                 //     }
                 // }
-                reply = '"' + msg.reply_to_message.text + '"';
-                sendTo.irc(channel.ircChan, '-> ' + reply);
-                reply = '';
+                if (process.env['lastMessageId' + channel.tgChatId] != msg.message_id) {
+                    reply = '"' + msg.reply_to_message.text + '"';
+                    sendTo.irc(channel.ircChan, '-> ' + reply);
+                    reply = '';
+                } else {
+                    reply = replyName + ': ';
+                }
             } else {
-                if (msg.reply_to_message.text) {
+                if (msg.reply_to_message.text && process.env['lastMessageId' + channel.tgChatId] != msg.message_id) {
                     reply = '"<' + replyName + '> ' + msg.reply_to_message.text + '"';
                     sendTo.irc(channel.ircChan, '-> ' + reply);
                     reply = '';
@@ -298,6 +302,8 @@ module.exports = function(config, sendTo) {
             text = msg.text.replace(/\n/g , '\n<' + getName(msg.from, config) + '> ');
             sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply + text);
         }
+
+        process.env['lastMessageId' + channel.tgChatId] = msg.message_id;
     });
 
     sendTo.tg = function(channel, msg) {
@@ -311,6 +317,10 @@ module.exports = function(config, sendTo) {
             return;
         }
 
-        tg.sendMessage(channel.tgChatId, msg);
+        var sentMessage = tg.sendMessage(channel.tgChatId, msg);
+        if (sentMessage) {
+            process.env['lastMessageId' + channel.tgChatId] = sentMessage.message_id;
+        }
+
     };
 };
