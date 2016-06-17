@@ -224,10 +224,14 @@ module.exports = function(config, sendTo) {
                 //         reply = replyName + ': ';
                 //     }
                 // }
-                reply = '[' + msg.reply_to_message.text + '] -> ';
+                reply = '"' + msg.reply_to_message.text + '"';
+                sendTo.irc(channel.ircChan, '-> ' + reply);
+                reply = '';
             } else {
                 if (msg.reply_to_message.text) {
-                    reply = '[<' + replyName + '> ' + msg.reply_to_message.text + '] -> ';
+                    reply = '"<' + replyName + '> ' + msg.reply_to_message.text + '"';
+                    sendTo.irc(channel.ircChan, '-> ' + reply);
+                    reply = '';
                 } else {
                     reply = replyName + ': ';
                 }
