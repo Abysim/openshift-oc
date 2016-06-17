@@ -324,6 +324,7 @@ module.exports = function(config, sendTo) {
         }
 
         tg.sendMessage(channel.tgChatId, msg).then(function (sended) {
+            console.log('Sent message to TG from IRC: ' + JSON.stringify(sended));
             var chatId = sended.chat_id;
             var messageId = sended.message_id;
 
