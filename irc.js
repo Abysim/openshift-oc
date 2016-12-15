@@ -49,7 +49,11 @@ module.exports = function(config, sendTo) {
             if (match) {
                 message = match[1].trim();
             }
-            var text = '<' + user + '> ' + message;
+            if (message.charAt(0) == '!') {
+                var text = message;
+            } else {
+                var text = '<' + user + '> ' + message;
+            }
             sendTo.tg(channel, text);
         }
     });
