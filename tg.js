@@ -304,7 +304,11 @@ module.exports = function(config, sendTo) {
                 ' was removed by ' + getName(msg.from, config));
         } else {
             text = msg.text.replace(/\n/g , '\n<' + getName(msg.from, config) + '> ');
-            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply + text);
+            if (text.charAt(0) == '!' && forward == '' && reply == '') {
+                sendTo.irc(channel.ircChan, text);
+            } else {
+                sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply + text);
+            }
         }
 
         process.env['lastMessageId' + channel.tgChatId + getName(msg.from, config)] = msg.message_id;
