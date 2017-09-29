@@ -29,8 +29,7 @@
     "lodash": "^4.12.0",
     "mkdirp": "^0.5.1",
     "node-static": "^0.7.7",
-    "node-telegram-bot-api": "^0.27.0"
-    "dwebp-bin": "git://github.com/Abysim/node-dwebp-bin.git",
+    "node-telegram-bot-api": "^0.27.0",
     "cloudconvert": "^1.1.2"
   },
   "devDependencies": {
