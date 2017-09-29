@@ -24,18 +24,18 @@
   ],
   "bugs": "https://github.com/FruitieX/teleirc/issues",
   "homepage": "https://github.com/FruitieX/teleirc",
-  "dependencies": {
-    "irc": "^0.5.2",
-    "lodash": "^4.12.0",
+   "dependencies": {
+    "irc": "git://github.com/Abysim/node-irc.git",
+    "lodash": "^3.10.1",
     "mkdirp": "^0.5.1",
     "node-static": "^0.7.7",
-    "node-telegram-bot-api": "^0.27.0",
-    "cloudconvert": "^1.1.2"
+    "node-telegram-bot-api": "^0.15.0",
+    "cloudconvert": "^1.1.1"
   },
   "devDependencies": {
-    "jscs": "^3.0.3",
-    "mocha": "^2.4.5",
-    "mocha-jscs": "^5.0.0",
-    "mocha-jshint": "^2.3.1"
+    "jscs": "^2.2.1",
+    "mocha": "^2.3.3",
+    "mocha-jscs": "^4.0.0",
+    "mocha-jshint": "^2.2.3"
   }
 }
