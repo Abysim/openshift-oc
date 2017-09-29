@@ -81,11 +81,11 @@ var parseDeprecatedOptions = function(config) {
 };
 
 if (process.argv[2] === '--genconfig') {
-    mkdirp(process.env.HOME + '/.teleirc');
+    mkdirp('/opt/app-root/src' + '/.teleirc');
 
     // read default config using readFile to include comments
     var config = fs.readFileSync(__dirname + '/config.defaults.js');
-    var configPath = process.env.HOME + '/.teleirc/config.js';
+    var configPath = '/opt/app-root/src' + '/.teleirc/config.js';
     fs.writeFileSync(configPath, config);
     console.log('Wrote default configuration to ' + configPath +
                 ', please edit it before re-running');
@@ -96,7 +96,7 @@ module.exports = function() {
     var config;
 
     try {
-        config = require(process.env.HOME + '/.teleirc/config.js');
+        config = require('/opt/app-root/src' + '/.teleirc/config.js');
     } catch (e) {
         console.error('ERROR while reading config:\n' + e + '\n\nPlease make sure ' +
                       'it exists and is valid. Run "teleirc --genconfig" to ' +
