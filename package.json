@@ -30,7 +30,7 @@
     "mkdirp": "^0.5.1",
     "node-static": "^0.7.7",
     "node-telegram-bot-api": "^0.27.0"
-    //"dwebp-bin": "git://github.com/Abysim/node-dwebp-bin.git",
+    "dwebp-bin": "git://github.com/Abysim/node-dwebp-bin.git",
     "cloudconvert": "^1.1.2"
   },
   "devDependencies": {
