@@ -16,7 +16,7 @@ var readChatIds = function(arr) {
 
     var idMissing = false;
     try {
-        var json = JSON.parse(fs.readFileSync(process.env.HOME + '/.teleirc/chat_ids'));
+        var json = JSON.parse(fs.readFileSync(process.env.HOME + '/storage/chat_ids'));
         for (var i = 0; i < arr.length; i++) {
             var key = arr[i].tgGroup;
             if (key in json) {
@@ -28,7 +28,7 @@ var readChatIds = function(arr) {
             }
         }
     } catch (e) {
-        console.log('~/.teleirc/chat_ids file not found!');
+        console.log('~/storage/chat_ids file not found!');
         idMissing = true;
     }
 
@@ -50,12 +50,12 @@ var writeChatIds = function(config) {
         }
     }
     json = JSON.stringify(json);
-    fs.writeFile(process.env.HOME + '/.teleirc/chat_ids', json, function(err) {
+    fs.writeFile(process.env.HOME + '/storage/chat_ids', json, function(err) {
         if (err) {
             console.log('error while storing chat ID:');
             console.log(err);
         } else {
-            console.log('successfully stored chat ID in ~/.teleirc/chat_ids');
+            console.log('successfully stored chat ID in ~/storage/chat_ids');
         }
     });
 };
@@ -89,8 +89,8 @@ function randomValueBase64(len) {
 
 var serveFile = function(fileId, config, tg, callback) {
     var randomString = randomValueBase64(config.mediaRandomLenght);
-    mkdirp(process.env.HOME + '/.teleirc/files/' + randomString);
-    tg.downloadFile(fileId, process.env.HOME + '/.teleirc/files/' + randomString).then(function(filePath) {
+    mkdirp(process.env.HOME + '/storage/files/' + randomString);
+    tg.downloadFile(fileId, process.env.HOME + '/storage/files/' + randomString).then(function(filePath) {
         if (path.extname(filePath) == '.webp') {
             var newPath = path.dirname(filePath) + '/' + path.basename(filePath, '.webp') + '.png';
 //            exec.execFile(dwebp.path, [filePath, '-o', newPath], function (error) {
@@ -151,8 +151,8 @@ var serveFile = function(fileId, config, tg, callback) {
 module.exports = function(config, sendTo) {
     // start HTTP server for media files if configured to do so
     if (config.showMedia) {
-        var fileServer = new nodeStatic.Server(process.env.HOME + '/.teleirc/files');
-        mkdirp(process.env.HOME + '/.teleirc/files');
+        var fileServer = new nodeStatic.Server(process.env.HOME + '/storage/files');
+        mkdirp(process.env.HOME + '/storage/files');
 
         require('http').createServer(function(req, res) {
             req.addListener('end', function() {
