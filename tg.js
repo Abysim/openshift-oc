@@ -87,11 +87,19 @@ function randomValueBase64(len) {
         .replace(/\//g, '0');
 }
 
-var serveFile = function(fileId, config, tg, callback) {
+var serveFile = function(fileId, config, tg, callback, is_sticker) {
     var randomString = randomValueBase64(config.mediaRandomLenght);
+    is_sticker = typeof is_sticker !== 'undefined' ?  is_sticker : false;
     mkdirp(process.env.HOME + '/storage/files/' + randomString);
     tg.downloadFile(fileId, process.env.HOME + '/storage/files/' + randomString).then(function(filePath) {
-        if (path.extname(filePath) == '.webp') {
+        if (path.extname(filePath) != '.webp' && is_sticker) {
+          var oldPath = filePath;
+          filePath = path.dirname(filePath) + '/' + path.basename(filePath, '.webp') + '.webp';
+          fs.rename(oldPath, filePath, function(err) {
+              if (err) console.log('Sticker not renamed: ' + err);
+          });
+        }    
+        if (path.extname(filePath) == '.webp' || is_sticker) {
             var newPath = path.dirname(filePath) + '/' + path.basename(filePath, '.webp') + '.png';
 //            exec.execFile(dwebp.path, [filePath, '-o', newPath], function (error) {
 //                if (!error) {
@@ -276,7 +284,7 @@ module.exports = function(config, sendTo) {
             serveFile(msg.sticker.file_id, config, tg, function(url) {
                 sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                     '(Sticker, ' + msg.sticker.width + 'x' + msg.sticker.height + ') ' + url);
-            });
+            }, true);
         } else if (msg.video) {
             serveFile(msg.video.file_id, config, tg, function(url) {
                 sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
