@@ -112,6 +112,7 @@ var serveFile = function(fileId, config, tg, callback, is_sticker) {
                     cloudconvert.createProcess({inputformat: 'webp', outputformat: 'png'}, function(err, process) {
                         if(err) {
                             console.error('CloudConvert Process creation failed: ' + err);
+                            callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
                         } else {
                             // start the process. see https://cloudconvert.com/apidoc#create
                             process.start({
@@ -120,21 +121,25 @@ var serveFile = function(fileId, config, tg, callback, is_sticker) {
                             }, function (err, process) {
                                 if (err) {
                                     console.error('CloudConvert Process start failed: ' + err);
+                                    callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
                                 } else {
                                     // upload the input file. see https://cloudconvert.com/apidoc#upload
                                     process.upload(fs.createReadStream(filePath), null, function (err, process) {
                                         if (err) {
                                             console.error('CloudConvert Process upload failed: ' + err);
+                                            callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
                                         } else {
                                             // wait until the process is finished (or completed with an error)
                                             process.wait(function (err, process) {
                                                 if (err) {
                                                     console.error('CloudConvert Process failed: ' + err);
+                                                    callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
                                                 } else {
                                                     // download it
                                                     process.download(fs.createWriteStream(newPath), null, function (err, process) {
                                                         if (err) {
                                                             console.error('CloudConvert Process download failed: ' + err);
+                                                            callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
                                                         } else {
                                                             filePath = newPath;
                                                             callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
